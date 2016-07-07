@@ -9,37 +9,57 @@
 import SpriteKit
 
 class GameScene: SKScene {
+    
+    var gridNode: Grid!
+    
+    
+    
+    
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
-        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
-        myLabel.text = "Hello, World!"
-        myLabel.fontSize = 45
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
+        gridNode = childNodeWithName("gridNode") as! Grid
         
-        self.addChild(myLabel)
+        
+        
+        
+        /* Create an SKAction based timer, 0.5 second delay */
+        let delay = SKAction.waitForDuration(0.35)
+        
+        /* Call the stepSimulation() method to advance the simulation */
+        let callMethod = SKAction.performSelector(#selector(GameScene.time), onTarget: self)
+        
+        /* Create the delay,step cycle */
+        let stepSequence = SKAction.sequence([delay,callMethod])
+        
+        /* Create an infinite simulation loop */
+        let simulation = SKAction.repeatActionForever(stepSequence)
+        
+        /* Run simulation action */
+        self.runAction(simulation)
+        
+        /* Default simulation to pause state */
+        self.paused = false
+        
+        
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-       /* Called when a touch begins */
+        /* Called when a touch begins */
         
-        for touch in touches {
-            let location = touch.locationInNode(self)
-            
-            let sprite = SKSpriteNode(imageNamed:"Spaceship")
-            
-            sprite.xScale = 0.5
-            sprite.yScale = 0.5
-            sprite.position = location
-            
-            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-            
-            sprite.runAction(SKAction.repeatActionForever(action))
-            
-            self.addChild(sprite)
-        }
     }
-   
+    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+        
     }
+    
+    func time () {
+        gridNode.addDotToEmptyGrid()
+        
+    }
+    
+    
+    
+    
+    
 }
